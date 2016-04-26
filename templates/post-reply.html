@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<div class="append"></div>
+   
+
+    <script>
+    
+$(document).ready(function() {
+
+$.ajax({
+	url: "/postreply/getdata/",
+	type: "GET",
+	dataType: 'html',
+	success: function (html) {
+				alert("hi");
+				$('.append').html(html);
+					},
+		error: function () {
+			
+
+				}
+	});
+});
+</script>
+
+
+{% endblock %}
+			

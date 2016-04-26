@@ -1,0 +1,192 @@
+<div class="container">
+      <div class="row">
+        <div class="span8">
+	<h1>Create a New Post</h1>
+       <div class="corgi_feed_well">
+            <div class="individual_feed_item">
+              <div class="feed_item">
+                <div class="feed_body">
+                  <div class="row">
+                    <div class="feed_profile_pic">
+                      <img src="/media/img/boxer.jpg" alt="meta image" class="meta_image" />
+                    </div>
+                    <div class="feed_text">
+			
+                   	<textarea name="newpost" rows="2" cols="80" id="postdata"  style="margin: 0px 0px 10px; height: 56px; width: 492px;"></textarea><br>
+			<button class="btn btn-primary" id="ajaxpost">Post</button>
+			
+                    </div>
+                  </div>
+                </div>
+		</div></div></div>
+{% for post in posts %}
+          <div class="corgi_feed_well">
+            <div class="individual_feed_item">
+              <div class="feed_item">
+                <div class="feed_body">
+                  <div class="row">
+                    <div class="feed_profile_pic">
+                      <img src="/media/img/boxer.jpg" alt="meta image" class="meta_image" />
+                    </div>
+                    <div class="feed_text">
+                      <p>{{ post.post }}</p>
+                    </div>
+                  </div>
+                </div>
+		
+		{% for reply in post.reply %}
+			
+		<div class="feed_stacked last_feed_item offset1">
+              <div class="feed_item">
+                <div class="feed_body">
+                  <div class="row">
+                    <div class="feed_profile_pic">
+                      <img src="/media/img/retriever.jpg" alt="meta image" class="meta_image" />
+                    </div>
+                    <div class="feed_text">
+                      <p>{{ reply.reply }}</p>
+			 <div class="share_wrapper">
+				 <div class="share pull-left">
+					<a href="#" class="share_button clikes clikes{{ post.id }}"   {{ clike }}><i class="icon-heart"></i></a>
+						<input type=hidden value="{{ reply.id }}">
+						<input type=hidden value="{{ reply.reply_likes }}">
+				</div>
+			<div class="pull-left" style="margin-top:5px;margin-left:3px;" >{{ reply.reply_likes }}</div>
+</div>
+
+                    </div>
+                  </div>
+                </div>
+		</div>
+		</div>
+		{% endfor %}
+                <div class="comment_area" id="showme{{post.id}}">
+                  <p>Add a comment</p>
+                  
+
+                    <textarea rows="3" class="span6 reply_data{{ post.id }}" id="comment"></textarea><br/>
+                    <input type="submit" class="btn reply_id" id="" /><input type=hidden value="{{ post.id }}" class="postid">
+                  
+                </div>
+                <hr class="feed_hr" />
+                <div class="bottom_meta">
+                  <div class="row">
+                    <div class="bottom_left">
+                      <div class="share_wrapper">
+				 <div class="share pull-left">
+					<a href="#" class="share_button likes likes{{ post.id }}" >
+					<i class="icon-heart"></i>
+					
+					</a>
+						<input type=hidden value="{{ post.id }}">
+							<input type=hidden value="{{ post.likes }}">
+				</div>
+			<div class="pull-right" id="refreshpl" style="margin-top:5px;margin-left:3px;" >{{ post.likes }}</div>
+					
+</div>  
+                    </div>
+                    <div class="bottom_right">
+                      <a href="#">{{ post.user }}</a> <span>|</span> <a href="#" id = "{{post.id}}"class="show_comment_link" onclick="clickme('{{post.id}}')">comment</a> <span>|</span> {{ post.updated }}
+                    </div> 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+	{% endfor %}
+              
+
+
+
+
+<script>
+//post update
+
+$(document).ready(function() {
+function callme()
+{
+  $.ajax({
+  url: '/postreply/getdata/',
+  type: "GET",
+  dataType: 'html',
+  success: function (html) {
+        
+        $('.append').html(html);
+          },
+    error: function () {
+      alert("error function called- callme")
+
+        }
+  });
+}
+
+$("#ajaxpost").click(function() { 
+  post_data = $("#postdata").val();
+  data = {
+    "post_data":post_data,
+    }
+$.ajax({
+  url: "add/",
+  type: "POST",
+  data: data,
+  success: function (response) {
+        
+        if(response=="True")
+        {
+          callme();
+        }
+          },
+    error: function () {
+<!-- //added the below line-->
+      alert('error')
+
+        }
+  });
+     });
+
+
+
+
+// Reply Update 
+
+$(".reply_id").click(function() { 
+  postid = $(this).next().val();
+  reply_data = $(".reply_data"+postid).val();
+  datas = {
+    "reply_data":reply_data,
+    "postid": postid,
+    } 
+
+  $.ajax({
+  url: "/postdata/reply/",
+  type: "POST",
+  data: datas,
+  success: function (response) {
+        
+        if(response=="True")
+        {
+          callme();
+        }
+          },
+    error: function () {
+        
+        }
+  });
+    });
+
+
+});
+
+
+function clickme(id)
+{
+  $('#showme'+id).toggle();
+}
+
+
+
+              </script>
+
+              </div>
+            </div>
+          </div>
